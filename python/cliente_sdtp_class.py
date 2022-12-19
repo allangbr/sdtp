@@ -92,13 +92,7 @@ while (f != ''):
 
             else:
                 if (compute_checksum(res) == 0):
-                    if(pin.acknum != (pdata.seqnum + len(pdata.data))):
-                        print("Pacote Corrompido - reenviar o pacote")
-                        pdata.print_struct()
-                        s.sendto(pdata.to_struct(), (IP, PORTA))
-                        res = recvtimeout(s, 2000) # 2000ms
-                    else:
-                        break
+                    break
                 else:
                     print("Pacote Corrompido - reenviar o pacote")
                     pdata.print_struct()
@@ -128,19 +122,19 @@ pin = SDTPPacket()
 pin.from_struct(res)
 pin.print_struct()
 
-# while True:
-#     if(pin.flags == TH_ACK):
-#         break
-#     else:
-#         print("Confirmação não recebida - reenviando o pacote FIN")
-#         s.sendto(pend.to_struct(), (IP, PORTA))
-#         res = recvtimeout(s, 2000)
-#         while (res == -2):
-#             print("Erro de timeout - reenviar o pacote FIN")
-#             s.sendto(pend.to_struct(), (IP, PORTA))
-#             res = recvtimeout(s, 2000)
-#         pin.from_struct(res)
-#         pin.print_struct()
+while True:
+    if(pin.flags == TH_ACK):
+        break
+    else:
+        print("Confirmação não recebida - reenviando o pacote FIN")
+        s.sendto(pend.to_struct(), (IP, PORTA))
+        res = recvtimeout(s, 2000)
+        while (res == -2):
+            print("Erro de timeout - reenviar o pacote FIN")
+            s.sendto(pend.to_struct(), (IP, PORTA))
+            res = recvtimeout(s, 2000)
+        pin.from_struct(res)
+        pin.print_struct()
 
 print("Envio Finalizado!")
 # TODO: observe que os dados a enviar devem ser obtidos a partir do
