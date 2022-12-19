@@ -1,4 +1,3 @@
-
 import socket
 
 # importando as constantes e funcoes de sdtp.py
@@ -30,8 +29,6 @@ while (res == -2):
     print("Erro de timeout - reenviar o pacote")
     s.sendto(pout.to_struct(), (IP, PORTA))
     res = recvtimeout(s, 2000)
-    if res != -2:
-        break
 
 print("Pacote recebido:")
 # NOTE: estou criando um pacote "zerado"
@@ -44,18 +41,15 @@ pin.print_struct()
 if pin.flags == TH_SYN | TH_ACK:
     # criando e enviando um ack
     pout = SDTPPacket(0, 0, 0, TH_ACK, 0)
-    s.sendto(pout.to_struct(), (IP, PORTA))
     print("Pacote ack enviado:")
-    pout.print()
+    pout.print_struct()
+    s.sendto(pout.to_struct(), (IP, PORTA))
     res = recvtimeout(s, 2000) # 2000ms
 
     while (res == -2):
-        print("Erro de timeout - reenviar o pacote")
-        pout = SDTPPacket(0, 0, 0, TH_ACK, 0)
+        print("Erro de timeout 02 - reenviar o pacote")
         s.sendto(pout.to_struct(), (IP, PORTA))
         res = recvtimeout(s, 2000)
-        if res != -2:
-            break
 
     print("Pacote recebido:")
     # NOTE: estou criando um pacote "zerado"
@@ -85,7 +79,7 @@ while (f != ''):
 
     while True:
         if (res == -2):
-            print("Erro de timeout - reenviar o pacote")
+            print("Erro de timeout 03 - reenviar o pacote")
             pdata.print_struct()
             s.sendto(pdata.to_struct(), (IP, PORTA))
             res = recvtimeout(s, 2000)
@@ -136,14 +130,13 @@ pin.from_struct(res)
 pin.print_struct()
 
 while True:
-    if (res.flags == TH_ACK):
-        print("ACABOU!")
+    if (pin.flags == TH_ACK):
         break
     else: 
         s.sendto(pend.to_struct(), (IP, PORTA))
         res = recvtimeout(s, 2000)
 
-print("ACABOU!")
+print("Envio Finalizado!")
 # TODO: observe que os dados a enviar devem ser obtidos a partir do
 # arquivo
 

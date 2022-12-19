@@ -184,4 +184,3 @@ class SDTPPacket:
         print("\tchecksum: 0x%x" % struct.unpack("!H", p[8:10]))
         if self.datalen > 0:
             print("\tdata: %s" % struct.unpack(str(self.datalen)+"s", p[10:(10+self.datalen)]))
-
